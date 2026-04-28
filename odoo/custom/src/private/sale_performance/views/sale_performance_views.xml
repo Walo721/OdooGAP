@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Spreadsheet Dashboard Group -->
     <record
@@ -6,20 +6,20 @@
         model="spreadsheet.dashboard.group"
     >
         <field name="name">Employees</field>
-        <field name="sequence">200</field>
+        <field name="sequence" eval="200" />
     </record>
 
     <!-- Spreadsheet Dashboards (Sidebar items) -->
     <record id="spreadsheet_dashboard_sales" model="spreadsheet.dashboard">
         <field name="name">Sales</field>
         <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
-        <field name="sequence">10</field>
+        <field name="sequence" eval="10" />
     </record>
 
     <record id="spreadsheet_dashboard_leads" model="spreadsheet.dashboard">
         <field name="name">Leads</field>
         <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
-        <field name="sequence">20</field>
+        <field name="sequence" eval="20" />
     </record>
 
     <!-- SALES REPORT VIEWS -->
