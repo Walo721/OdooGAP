@@ -1,0 +1,93 @@
+{
+  "version": 21,
+  "sheets": [
+    {
+      "id": "sheet1",
+      "name": "Dashboard",
+      "colNumber": 26,
+      "rowNumber": 100,
+      "cells": {
+        "D2": {
+          "content": "Employee Leads Performance Overview"
+        },
+        "B10": {"content": "=PIVOT.VALUE(1, \"lead_count\")"},
+        "B11": {"content": "=PIVOT.VALUE(1, \"expected_revenue\")"}
+      },
+      "merges": [],
+      "figures": [
+        {
+          "id": "fig1",
+          "x": 250,
+          "y": 80,
+          "width": 305,
+          "height": 100,
+          "tag": "chart",
+          "data": {
+            "title": {"text": "Number of Leads", "bold": true},
+            "type": "scorecard",
+            "background": "#FDF2F8",
+            "keyValue": "B10"
+          }
+        },
+        {
+          "id": "fig2",
+          "x": 565,
+          "y": 80,
+          "width": 305,
+          "height": 100,
+          "tag": "chart",
+          "data": {
+            "title": {"text": "Expected Revenue", "bold": true},
+            "type": "scorecard",
+            "background": "#FFFBEB",
+            "keyValue": "B11"
+          }
+        },
+        {
+          "id": "fig3",
+          "x": 250,
+          "y": 200,
+          "width": 620,
+          "height": 400,
+          "tag": "chart",
+          "data": {
+            "title": {"text": "Leads per Employee", "bold": true},
+            "background": "#FFFFFF",
+            "legendPosition": "top",
+            "metaData": {
+              "groupBy": ["employee_id"],
+              "measure": "lead_count",
+              "resModel": "crm.performance.report"
+            },
+            "searchParams": {
+              "domain": [],
+              "groupBy": ["employee_id"]
+            },
+            "type": "odoo_bar",
+            "verticalAxisPosition": "left"
+          }
+        }
+      ]
+    }
+  ],
+  "pivots": {
+    "1": {
+      "type": "ODOO",
+      "id": "1",
+      "formulaId": "1",
+      "measures": [
+        {"id": "lead_count", "fieldName": "lead_count"},
+        {"id": "expected_revenue", "fieldName": "expected_revenue"}
+      ],
+      "model": "crm.performance.report",
+      "rowGroupBys": [],
+      "colGroupBys": [],
+      "columns": [],
+      "rows": [{"fieldName": "employee_id"}],
+      "domain": [],
+      "context": {},
+      "name": "Leads Pivot"
+    }
+  },
+  "revisionId": "START_REVISION"
+}

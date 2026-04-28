@@ -14,12 +14,30 @@
         <field name="name">Sales</field>
         <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
         <field name="sequence" eval="10" />
+        <field
+            name="main_data_model_ids"
+            eval="[(4, ref('sale_performance.model_sale_performance_report'))]"
+        />
+        <field
+            name="spreadsheet_binary_data"
+            type="base64"
+            file="sale_performance/data/files/sales_dashboard.json"
+        />
     </record>
 
     <record id="spreadsheet_dashboard_leads" model="spreadsheet.dashboard">
         <field name="name">Leads</field>
         <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
         <field name="sequence" eval="20" />
+        <field
+            name="main_data_model_ids"
+            eval="[(4, ref('sale_performance.model_crm_performance_report'))]"
+        />
+        <field
+            name="spreadsheet_binary_data"
+            type="base64"
+            file="sale_performance/data/files/leads_dashboard.json"
+        />
     </record>
 
     <!-- SALES REPORT VIEWS -->
@@ -98,7 +116,7 @@
         <field name="res_model">sale.performance.report</field>
         <field name="view_mode">graph,pivot,list</field>
         <field name="search_view_id" ref="view_sale_performance_report_search" />
-        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="context">{}</field>
     </record>
 
     <!-- LEADS REPORT VIEWS -->
@@ -150,7 +168,39 @@
         <field name="res_model">crm.performance.report</field>
         <field name="view_mode">graph,pivot,list</field>
         <field name="search_view_id" ref="view_crm_performance_report_search" />
-        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- CONSOLIDATED DASHBOARD (Legacy Board) -->
+    <record id="view_performance_main_board_form" model="ir.ui.view">
+        <field name="name">performance.main.board.form</field>
+        <field name="model">board.board</field>
+        <field name="arch" type="xml">
+            <form string="Performance Dashboard">
+                <board style="1-1">
+                    <column>
+                        <action
+                            name="%(action_sale_performance_report)d"
+                            string="Sales per Employee"
+                        />
+                    </column>
+                    <column>
+                        <action
+                            name="%(action_crm_performance_report)d"
+                            string="Leads per Employee"
+                        />
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_performance_main_board" model="ir.actions.act_window">
+        <field name="name">Performance Overview</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="view_performance_main_board_form" />
     </record>
 
     <!-- MENU ITEMS -->
@@ -158,18 +208,26 @@
         id="menu_sale_performance_root"
         name="Employees Performance"
         parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+        action="action_performance_main_board"
         sequence="20"
     />
     <menuitem
+        id="menu_sale_performance_dashboard"
+        name="Overview"
+        parent="menu_sale_performance_root"
+        action="action_performance_main_board"
+        sequence="5"
+    />
+    <menuitem
         id="menu_sale_performance_sales"
-        name="Sales"
+        name="Sales Detail"
         parent="menu_sale_performance_root"
         action="action_sale_performance_report"
         sequence="10"
     />
     <menuitem
         id="menu_sale_performance_leads"
-        name="Leads"
+        name="Leads Detail"
         parent="menu_sale_performance_root"
         action="action_crm_performance_report"
         sequence="20"

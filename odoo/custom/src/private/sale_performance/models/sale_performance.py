@@ -23,10 +23,10 @@ class SalePerformanceReport(models.Model):
                 so.date_order::date as date
             FROM
                 sale_order so
-            JOIN
+            LEFT JOIN
                 hr_employee he ON he.user_id = so.user_id
             WHERE
-                so.state in ('sale', 'done')
+                so.state in ('draft', 'sent', 'sale', 'done')
             GROUP BY
                 he.id, so.date_order::date
         """
@@ -54,7 +54,7 @@ class CrmPerformanceReport(models.Model):
                 cl.create_date::date as date
             FROM
                 crm_lead cl
-            JOIN
+            LEFT JOIN
                 hr_employee he ON he.user_id = cl.user_id
             GROUP BY
                 he.id, cl.create_date::date
