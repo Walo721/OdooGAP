@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_performance_report,sale.performance.report,model_sale_performance_report,base.group_user,1,0,0,0
+access_crm_performance_report,crm.performance.report,model_crm_performance_report,base.group_user,1,0,0,0

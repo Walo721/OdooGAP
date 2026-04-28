@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Spreadsheet Dashboard Group -->
+    <record
+        id="spreadsheet_dashboard_group_employees"
+        model="spreadsheet.dashboard.group"
+    >
+        <field name="name">Employees</field>
+        <field name="sequence">200</field>
+    </record>
+
+    <!-- Spreadsheet Dashboards (Sidebar items) -->
+    <record id="spreadsheet_dashboard_sales" model="spreadsheet.dashboard">
+        <field name="name">Sales</field>
+        <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="spreadsheet_dashboard_leads" model="spreadsheet.dashboard">
+        <field name="name">Leads</field>
+        <field name="dashboard_group_id" ref="spreadsheet_dashboard_group_employees" />
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- SALES REPORT VIEWS -->
+    <record id="view_sale_performance_report_list" model="ir.ui.view">
+        <field name="name">sale.performance.report.list</field>
+        <field name="model">sale.performance.report</field>
+        <field name="arch" type="xml">
+            <list string="Sale Performance" create="0" edit="0" delete="0">
+                <field name="date" />
+                <field name="employee_id" />
+                <field name="sale_count" sum="Total Sales Count" />
+                <field name="total_amount" sum="Grand Total" widget="monetary" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_sale_performance_report_graph" model="ir.ui.view">
+        <field name="name">sale.performance.report.graph</field>
+        <field name="model">sale.performance.report</field>
+        <field name="arch" type="xml">
+            <graph string="Sales per Employee" type="bar" sample="1">
+                <field name="employee_id" />
+                <field name="sale_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_sale_performance_report_pivot" model="ir.ui.view">
+        <field name="name">sale.performance.report.pivot</field>
+        <field name="model">sale.performance.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Sales Analysis" sample="1">
+                <field name="employee_id" type="row" />
+                <field name="date" interval="month" type="col" />
+                <field name="sale_count" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_sale_performance_report_search" model="ir.ui.view">
+        <field name="name">sale.performance.report.search</field>
+        <field name="model">sale.performance.report</field>
+        <field name="arch" type="xml">
+            <search string="Sale Performance Search">
+                <field name="employee_id" />
+                <filter
+                    string="This Month"
+                    name="this_month"
+                    domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"
+                />
+                <filter
+                    string="Last Month"
+                    name="last_month"
+                    domain="[('date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%%Y-%%m-01')),
+                                 ('date', '&lt;', context_today().strftime('%%Y-%%m-01'))]"
+                />
+                <separator />
+                <group expand="1" string="Group By">
+                    <filter
+                        string="Employee"
+                        name="group_by_employee"
+                        context="{'group_by':'employee_id'}"
+                    />
+                    <filter
+                        string="Date"
+                        name="group_by_date"
+                        context="{'group_by':'date'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sale_performance_report" model="ir.actions.act_window">
+        <field name="name">Sales Performance</field>
+        <field name="res_model">sale.performance.report</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_sale_performance_report_search" />
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- LEADS REPORT VIEWS -->
+    <record id="view_crm_performance_report_list" model="ir.ui.view">
+        <field name="name">crm.performance.report.list</field>
+        <field name="model">crm.performance.report</field>
+        <field name="arch" type="xml">
+            <list string="CRM Performance" create="0" edit="0" delete="0">
+                <field name="date" />
+                <field name="employee_id" />
+                <field name="lead_count" sum="Total Leads" />
+                <field
+                    name="expected_revenue"
+                    sum="Total Expected Revenue"
+                    widget="monetary"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crm_performance_report_graph" model="ir.ui.view">
+        <field name="name">crm.performance.report.graph</field>
+        <field name="model">crm.performance.report</field>
+        <field name="arch" type="xml">
+            <graph string="Leads per Employee" type="bar" sample="1">
+                <field name="employee_id" />
+                <field name="lead_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_crm_performance_report_search" model="ir.ui.view">
+        <field name="name">crm.performance.report.search</field>
+        <field name="model">crm.performance.report</field>
+        <field name="arch" type="xml">
+            <search string="CRM Performance Search">
+                <field name="employee_id" />
+                <filter
+                    string="This Month"
+                    name="this_month"
+                    domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_crm_performance_report" model="ir.actions.act_window">
+        <field name="name">Leads Performance</field>
+        <field name="res_model">crm.performance.report</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_crm_performance_report_search" />
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- MENU ITEMS -->
+    <menuitem
+        id="menu_sale_performance_root"
+        name="Employees Performance"
+        parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_sale_performance_sales"
+        name="Sales"
+        parent="menu_sale_performance_root"
+        action="action_sale_performance_report"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_sale_performance_leads"
+        name="Leads"
+        parent="menu_sale_performance_root"
+        action="action_crm_performance_report"
+        sequence="20"
+    />
+</odoo>
