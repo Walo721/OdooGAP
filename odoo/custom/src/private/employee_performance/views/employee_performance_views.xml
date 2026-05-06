@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- Action for Sales grouped by Employee (Salesperson) -->
+    <record id="action_employee_performance_sale" model="ir.actions.act_window">
+        <field name="name">Ventas por Empleado</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field
+            name="context"
+        >{'search_default_User': 1, 'group_by': ['user_id']}</field>
+    </record>
+
+    <!-- Action for CRM Leads grouped by Employee (Salesperson) -->
+    <record id="action_employee_performance_crm" model="ir.actions.act_window">
+        <field name="name">Oportunidades por Empleado</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">graph,pivot</field>
+        <field
+            name="context"
+        >{'search_default_assigned_to_me': 0, 'group_by': ['user_id']}</field>
+    </record>
+
+    <!-- Action for Expenses grouped by Employee -->
+    <record id="action_employee_performance_expense" model="ir.actions.act_window">
+        <field name="name">Gastos por Empleado</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{'group_by': ['employee_id']}</field>
+    </record>
+
+    <!-- Board View -->
+    <record id="view_employee_performance_board" model="ir.ui.view">
+        <field name="name">employee.performance.board.view</field>
+        <field name="model">board.board</field>
+        <field name="arch" type="xml">
+            <form string="Employee Performance">
+                <board style="2-1">
+                    <column>
+                        <action
+                            name="%(action_employee_performance_sale)d"
+                            string="Ventas por Empleado"
+                        />
+                        <action
+                            name="%(action_employee_performance_expense)d"
+                            string="Gastos por Empleado"
+                        />
+                    </column>
+                    <column>
+                        <action
+                            name="%(action_employee_performance_crm)d"
+                            string="Oportunidades por Empleado"
+                        />
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the Board -->
+    <record id="action_employee_performance_board" model="ir.actions.act_window">
+        <field name="name">Employee Performance</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="view_employee_performance_board" />
+    </record>
+
+    <!-- Menu Item in the Dashboard App -->
+    <menuitem
+        id="menu_employee_performance_board"
+        name="Employee Performance"
+        parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+        action="action_employee_performance_board"
+        sequence="20"
+    />
+
+</odoo>
